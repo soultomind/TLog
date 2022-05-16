@@ -7,8 +7,8 @@
     <ProjectGuid>{12AA9397-85D4-4D9B-8BAC-2DC1F304811E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TraceLog</RootNamespace>
-    <AssemblyName>TraceLog</AssemblyName>
+    <RootNamespace>TLog</RootNamespace>
+    <AssemblyName>TLog</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
