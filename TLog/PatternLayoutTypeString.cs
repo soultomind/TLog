@@ -9,21 +9,21 @@ namespace TLog
 {
     public class PatternLayoutTypeString
     {
-        public string CharString { get; internal set; }
+        public string LayoutType { get; internal set; }
 
-        public PatternLayoutTypeString(string charString)
+        public PatternLayoutTypeString(string layoutType)
         {
-            CharString = charString;
+            LayoutType = layoutType;
         }
 
-        public string LayoutCharString
+        public string PatternLayoutType
         {
-            get { return "%" + CharString; }
+            get { return "%" + LayoutType; }
         }
 
         public int IndexOf(string input)
         {
-            Regex regex = new Regex(LayoutCharString);
+            Regex regex = new Regex(PatternLayoutType);
             if (regex.IsMatch(input))
             {
                 Match match = regex.Match(input);
