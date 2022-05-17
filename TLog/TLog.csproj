@@ -40,6 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LogLevel.cs" />
+    <Compile Include="PatternLayoutFormat.cs" />
+    <Compile Include="PatternLayoutTypeString.cs" />
     <Compile Include="TLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
