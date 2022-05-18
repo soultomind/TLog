@@ -17,7 +17,7 @@ namespace TLog
         public override string ConvertArgument(object obj = null)
         {
             LogLevel logLevel = obj as LogLevel;
-            return logLevel.StrLevel;
+            return logLevel.StrLevel.ToUpper();
         }
     }
 }

@@ -17,7 +17,7 @@ namespace TLog
 
         public override string ConvertArgument(object obj = null)
         {
-            return Thread.CurrentThread.Name;
+            return Thread.CurrentThread.Name != null ? Thread.CurrentThread.Name : "Main";
         }
     }
 }
