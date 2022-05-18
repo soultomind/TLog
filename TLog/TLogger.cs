@@ -16,44 +16,44 @@ namespace TLog
         /// <summary>
         /// 클래스명
         /// </summary>
-        public static readonly PatternLayoutTypeString Class = new PatternLayoutTypeString("C");
+        public static readonly IPatternLayoutType Class = new ClassPatternLayout("C");
 
         /// <summary>
         /// 현재날짜
         /// </summary>
-        public static readonly PatternLayoutTypeString Date = new PatternLayoutTypeString("date");
+        public static readonly IPatternLayoutType Date = new DatePatternLayout("date");
 
         /// <summary>
         /// DebugView Filter Include Filter 값
         /// </summary>
-        public static readonly PatternLayoutTypeString IncludeFilter = new PatternLayoutTypeString("includefilter");
+        public static readonly IPatternLayoutType IncludeFilter = new IncludeFilterPatternLayout("includefilter");
 
         /// <summary>
         /// 로그레벨
         /// </summary>
-        public static readonly PatternLayoutTypeString Level = new PatternLayoutTypeString("level");
+        public static readonly IPatternLayoutType Level = new LevelPatternLayout("level");
 
         /// <summary>
         /// 메소드명
         /// </summary>
-        public static readonly PatternLayoutTypeString Method = new PatternLayoutTypeString("M");
+        public static readonly IPatternLayoutType Method = new MethodPatternLayout("M");
 
         /// <summary>
         /// 메시지
         /// </summary>
-        public static readonly PatternLayoutTypeString Message = new PatternLayoutTypeString("message");
+        public static readonly IPatternLayoutType Message = new MessagePatternLayout("message");
 
         /// <summary>
         /// 개행
         /// </summary>
-        public static readonly PatternLayoutTypeString NewLine = new PatternLayoutTypeString("newline");
+        public static readonly IPatternLayoutType NewLine = new NewLinePatternLayout("newline");
 
         /// <summary>
         /// 현재스레드
         /// </summary>
-        public static readonly PatternLayoutTypeString Thread = new PatternLayoutTypeString("thread");
+        public static readonly IPatternLayoutType Thread = new ThreadPatternLayout("thread");
 
-        private static readonly PatternLayoutTypeString[] LayoutTypeStrings = new PatternLayoutTypeString[] 
+        private static readonly IPatternLayoutType[] LayoutTypeStrings = new IPatternLayoutType[] 
         {
             Class, Date, IncludeFilter, Level, Method, Message, NewLine, Thread
 
@@ -64,30 +64,34 @@ namespace TLog
         /// <remarks>
         /// 
         /// </remarks>
-        public static string ConsolePatternLayout = "%level %a %c:%m %date %message";
+        public static string DefaultPatternLayout = "%level %includefilter %C:%M %date %message";
+        private static List<PatternLayoutTypeComparable> DefaultPatternLayoutTypes;
+        private static string DefaultPatternFormat = String.Empty;
+
 
         /// <summary>
         /// <see cref="System.Diagnostics.TextWriterTraceListener"/>에 출력하는 패턴 레이아웃입니다.
         /// </summary>
-        public static string TextWriterLayout = "%level %a %C:%M %date %message";
+        public static string TextWriterLayout = DefaultPatternLayout;
 
         /// <summary>
         /// <see cref="System.Diagnostics.EventLogTraceListener"/>에 출력하는 패턴 레이아웃입니다.
         /// </summary>
-        public static string EventLogLayout = "%level %a %C:%M %date %message";
+        public static string EventLogLayout = DefaultPatternLayout;
 
         /// <summary>
         /// %date 패턴 사용시 사용되는 포맷입니다.
         /// </summary>
         public static string DateTimeFormat = "yyyy-MM-dd hh:mm:ss:ffff";
 
-        private static readonly int SkipFrames = 2;
-
-        private static bool HasStackFrameLayout(Type listenerType)
+        #region Private
+        private static bool HasStackFrameLayout(string typeName)
         {
+            // TODO: typeof(DefaultTraceListener) 시에 Type.Name 값이 RuntimeType 조사필요
             foreach (TraceListener itemListener in Trace.Listeners)
             {
-                if (itemListener.GetType() == listenerType.GetType())
+                Type type = itemListener.GetType();
+                if (type.Name == typeName)
                 {
                     return true;
                 }
@@ -95,116 +99,160 @@ namespace TLog
             return false;
         }
 
-        private static StackFrame NewStackFrame(int skipFrames = 2, bool fNeedFileInfo = true)
+        private static bool IsReflectPatternLayout(IPatternLayoutType layoutType)
         {
-            return new StackFrame(skipFrames, fNeedFileInfo);
+            return layoutType.GetType() == Class.GetType() || layoutType.GetType() == Method.GetType();
         }
 
-        private static string MakePatternLayout()
+        private static bool HasReflectPatternLayout(List<PatternLayoutTypeComparable> layoutTypeComparables)
         {
-            StackFrame sf = NewStackFrame();
-            return String.Format("{0}:{1}", sf.GetMethod().ReflectedType.Name, sf.GetMethod().Name);
+            foreach (var layoutTypeComparable in layoutTypeComparables)
+            {
+                IPatternLayoutType layoutType = layoutTypeComparable.LayoutType;
+                if (IsReflectPatternLayout(layoutType))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
-        private static string DateTimeNowString()
+        private static string CreateFormatText(string[] args)
         {
-            return DateTime.Now.ToString(DateTimeFormat);
+            if (DefaultPatternFormat == String.Empty)
+            {
+                // "%level %includefilter %C:%M %date %message";
+                string format = DefaultPatternLayout;
+                for (int i = 0; i < DefaultPatternLayoutTypes.Count; i++)
+                {
+                    IPatternLayoutType layoutType = DefaultPatternLayoutTypes[i].LayoutType;
+                    format = format.Replace(layoutType.LayoutTypeString, "{" + i + "}");
+                }
+
+                DefaultPatternFormat = format;
+                return String.Format(format, args);
+            }
+
+            return String.Format(DefaultPatternFormat, args);
+        }
+        #endregion
+
+        /// <summary>
+        /// 디버그뷰에서 사용되는 Filter/Include Filter 에 사용되는 속성입니다.
+        /// </summary>
+        public static string DebugViewIncludeFilter
+        {
+            get { return (IncludeFilter as IncludeFilterPatternLayout).IncludeFilter; }
+            set { (IncludeFilter as IncludeFilterPatternLayout).IncludeFilter = value; }
         }
 
-        #region ConsoleTraceListener
-
-        private static string MakeConsoleTraceListenerMessage(LogLevel level, string message)
+        public static void Configure()
         {
             List<string> format = new List<string>();
             StringBuilder builder = new StringBuilder();
 
-            StackFrame sf = null;
+            int indexOf = -1;
+
             // TOOD: 아래 패턴레이아웃에서 사용되는 모든 타입에 대해서 위치 값 구한후 Format 설정필요.
-            if (Class.IndexOf(ConsolePatternLayout) != -1 || Method.IndexOf(ConsolePatternLayout) != -1)
+            if (HasStackFrameLayout("DefaultTraceListener"))
             {
-                sf = NewStackFrame(3, true);
+                List<PatternLayoutTypeComparable> list = new List<PatternLayoutTypeComparable>();
+                foreach (PatternLayoutType layoutType in LayoutTypeStrings)
+                {
+                    indexOf = layoutType.IndexOf(DefaultPatternLayout);
+                    if (indexOf != -1)
+                    {
+                        list.Add(new PatternLayoutTypeComparable(indexOf, layoutType));
+                    }
+                }
+
+                list.Sort();
+                DefaultPatternLayoutTypes = list;
+                
+                // 다시 루프 돌면서 
             }
 
-            if (Class.IndexOf(ConsolePatternLayout) != -1)
-            {
-                format.Add(sf.GetMethod().ReflectedType.Name);
-            }
-
-
-
-            if (ConsolePatternLayout.IndexOf("%date") != -1)
-            {
-                format.Add(DateTimeNowString());
-            }
-
-            if (ConsolePatternLayout.IndexOf("%level") != -1)
-            {
-                format.Add(level.StrLevel);
-            }
-
-            if (ConsolePatternLayout.IndexOf("%m") != -1)
-            {
-                format.Add(sf.GetMethod().Name);
-            }
-
-            if (ConsolePatternLayout.IndexOf("%message") != -1)
-            {
-                format.Add(message);
-            }
-
-            if (ConsolePatternLayout.IndexOf("%thread") != -1)
-            {
-                format.Add(System.Threading.Thread.CurrentThread.Name);
-            }
-
-            return builder.ToString();
+            #region TODO TextWriter, EventLog 작업
+            
+            //TextWriterTraceListener
+            //EventLogTraceListener 
+            
+            #endregion
         }
 
-        #endregion
-
-        public static void Configure()
+        private static string MakeMessage(LogLevel logLevel, string message)
         {
-            if (HasStackFrameLayout(typeof(ConsoleTraceListener)))
-            {
+            // TOOD: Debug 로그레벨이 현재 사용가능한지 체크 후 출력 처리
 
+            // "%level %a %C:%M %date %message";
+
+            string[] args = new string[DefaultPatternLayoutTypes.Count];
+            StackFrame sf = null;
+            if (HasReflectPatternLayout(DefaultPatternLayoutTypes))
+            {
+                sf = new StackFrame(2, true);
             }
 
-            if (HasStackFrameLayout(typeof(TextWriterTraceListener)))
+            string arg = String.Empty;
+            for (int i = 0; i < DefaultPatternLayoutTypes.Count; i++)
             {
-
+                // Class, Date, IncludeFilter, Level, Method, Message, NewLine, Thread
+                IPatternLayoutType layoutType = DefaultPatternLayoutTypes[i].LayoutType;
+                if (IsReflectPatternLayout(layoutType))
+                {
+                    arg = layoutType.ConvertArgument(sf);
+                }
+                else if (layoutType.GetType() == Date.GetType())
+                {
+                    arg = layoutType.ConvertArgument(DateTimeFormat);
+                }
+                else if (layoutType.GetType() == Level.GetType())
+                {
+                    arg = layoutType.ConvertArgument(LogLevel.Debug);
+                }
+                else if (layoutType.GetType() == Message.GetType())
+                {
+                    arg = layoutType.ConvertArgument(message);
+                }
+                else
+                {
+                    arg = layoutType.ConvertArgument();
+                }
+                args[i] = arg;
             }
 
-            if (HasStackFrameLayout(typeof(EventLogTraceListener)))
-            {
-                
-            }
+            message = CreateFormatText(args);
+            return message;
+        }
+
+        public static void DebugWrite(string message)
+        {
+            message = MakeMessage(LogLevel.Debug, message);
+            Trace.Write(message);
+        }
+
+        public static void DebugWriteLine(string message)
+        {
+            message = MakeMessage(LogLevel.Debug, message);
+            Trace.WriteLine(message);
+        }
+
+        public static void Write(string message)
+        {
+            StackFrame sf = new StackFrame(1, true);
+            string header = String.Format("{0}:{1}", sf.GetMethod().ReflectedType.Name, sf.GetMethod().Name);
+
+            message = String.Format("{0} {1} {2}", header, DateTime.Now.ToString(DateTimeFormat), message);
+            Trace.Write(message);
         }
 
         public static void WriteLine(string message)
         {
-            if (HasStackFrameLayout(typeof(ConsoleTraceListener)))
-            {
-                // TODO: ConsoleTraceListener 출력
+            StackFrame sf = new StackFrame(1, true);
+            string header = String.Format("{0}:{1}", sf.GetMethod().ReflectedType.Name, sf.GetMethod().Name);
 
-            }
-
-            if (HasStackFrameLayout(typeof(TextWriterTraceListener)))
-            {
-                // TODO: TextWriterTraceListener 출력
-
-            }
-
-            if (HasStackFrameLayout(typeof(EventLogTraceListener)))
-            {
-                // TODO: EventLogTraceListener 출력
-            }
-
-            string header = MakePatternLayout();
-
-            message = String.Format("{0} {1} {2}", header, DateTimeNowString(), message);
+            message = String.Format("{0} {1} {2}", header, DateTime.Now.ToString(DateTimeFormat), message);
             Trace.WriteLine(message);
-
-            
         }
     }
 }

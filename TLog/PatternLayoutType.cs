@@ -7,23 +7,23 @@ using System.Threading.Tasks;
 
 namespace TLog
 {
-    public class PatternLayoutTypeString
+    public abstract class PatternLayoutType : IPatternLayoutType
     {
-        public string LayoutType { get; internal set; }
+        public string TypeString { get; private set; }
 
-        public PatternLayoutTypeString(string layoutType)
+        public PatternLayoutType(string typeString)
         {
-            LayoutType = layoutType;
+            TypeString = typeString;
         }
 
-        public string PatternLayoutType
+        public string LayoutTypeString
         {
-            get { return "%" + LayoutType; }
+            get { return "%" + TypeString; }
         }
 
         public int IndexOf(string input)
         {
-            Regex regex = new Regex(PatternLayoutType);
+            Regex regex = new Regex(LayoutTypeString);
             if (regex.IsMatch(input))
             {
                 Match match = regex.Match(input);
@@ -31,5 +31,7 @@ namespace TLog
             }
             return -1;
         }
+
+        public abstract string ConvertArgument(object obj = null);
     }
 }

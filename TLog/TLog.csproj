@@ -40,9 +40,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassPatternLayout.cs" />
+    <Compile Include="DatePatternLayout.cs" />
+    <Compile Include="IncludeFilterPatternLayout.cs" />
+    <Compile Include="IPatternLayoutType.cs" />
     <Compile Include="LogLevel.cs" />
+    <Compile Include="LevelPatternLayout.cs" />
+    <Compile Include="MessagePatternLayout.cs" />
+    <Compile Include="MethodPatternLayout.cs" />
+    <Compile Include="NewLinePatternLayout.cs" />
     <Compile Include="PatternLayoutFormat.cs" />
-    <Compile Include="PatternLayoutTypeString.cs" />
+    <Compile Include="PatternLayoutType.cs" />
+    <Compile Include="PatternLayoutTypeComparable.cs" />
+    <Compile Include="ThreadPatternLayout.cs" />
     <Compile Include="TLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
