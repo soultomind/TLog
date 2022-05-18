@@ -13,17 +13,19 @@ namespace TLog
         {
             TLogger.WriteLine("출력");
 
+            TLogger.DefaultPatternLayout 
+                = "%includefilter %level %date [%threadThread-%C:%M] %message%newline";
             TLogger.Configure();
-            TLogger.DebugWriteLine("프로그램 시작");
+            TLogger.DebugWrite("프로그램 시작");
             Console.ReadLine();
 
             for (int i = 0; i < 10; i++)
             {
-                TLogger.DebugWriteLine(".");
+                TLogger.DebugWrite(".");
                 Thread.Sleep(500);
             }
 
-            TLogger.DebugWriteLine("프로그램 종료");
+            TLogger.DebugWrite("프로그램 종료");
         }
     }
 }
