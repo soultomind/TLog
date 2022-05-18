@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TLog
@@ -12,12 +13,17 @@ namespace TLog
         {
             TLogger.WriteLine("출력");
 
-            string layout = TLogger.ConsolePatternLayout;
-            int indexOf = TLogger.Class.IndexOf(layout);
-            TLogger.WriteLine("Method.IndexOf=" + indexOf);
-            indexOf = TLogger.Message.IndexOf(layout);
-            TLogger.WriteLine("Method.IndexOf=" + indexOf);
+            TLogger.Configure();
+            TLogger.DebugWriteLine("프로그램 시작");
             Console.ReadLine();
+
+            for (int i = 0; i < 10; i++)
+            {
+                TLogger.DebugWriteLine(".");
+                Thread.Sleep(500);
+            }
+
+            TLogger.DebugWriteLine("프로그램 종료");
         }
     }
 }
