@@ -48,7 +48,6 @@ namespace TLog
                 {
                     if (UseCurrentPatternFormat == String.Empty)
                     {
-                        Trace.WriteLine("Set UseCurrentPatternFormat!");
                         string format = patternLayoutFormat;
                         for (int i = 0; i < TypeOrders.Count; i++)
                         {
@@ -57,6 +56,7 @@ namespace TLog
                         }
 
                         UseCurrentPatternFormat = format;
+                        TLogger.WriteLine("Set UseCurrentPatternFormat='" + UseCurrentPatternFormat + "'");
                     }
                 }                
             }
