@@ -9,7 +9,25 @@ namespace TLog
 {
     public class IncludeFilterPatternLayout : PatternLayoutType
     {
-        public string IncludeFilter { get; set; }
+        public string IncludeFilter
+        {
+            get { return _includeFilter; }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException();
+                }
+
+                if (String.IsNullOrEmpty(value))
+                {
+                    throw new ArgumentException();
+                }
+
+                _includeFilter = value;
+            }
+        }
+        private string _includeFilter;
         public IncludeFilterPatternLayout(string typeString) 
             : base(typeString)
         {
@@ -17,10 +35,6 @@ namespace TLog
 
         public override string ConvertArgument(object obj = null)
         {
-            if (IncludeFilter == null)
-            {
-                IncludeFilter = Assembly.GetAssembly(typeof(IncludeFilterPatternLayout)).GetName().Name;
-            }
             return IncludeFilter;
         }
     }

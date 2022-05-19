@@ -8,7 +8,17 @@ namespace TLog
 {
     public class DatePatternLayout : PatternLayoutType
     {
-        public string Format { get; set; }
+        public string Format
+        {
+            get { return _format; }
+            set
+            {
+                DateTime.Now.ToString(value);
+                _format = value;
+            }
+        }
+        private string _format;
+
         public DatePatternLayout(string typeString) 
             : base(typeString)
         {
