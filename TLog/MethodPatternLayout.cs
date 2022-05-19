@@ -15,7 +15,7 @@ namespace TLog
 
         }
 
-        public override string ConvertArgument(object obj)
+        public override string ConvertArgument(object obj = null)
         {
             StackFrame sf = obj as StackFrame;
             return sf.GetMethod().Name;
