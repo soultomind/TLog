@@ -11,13 +11,18 @@ namespace TLog
     {
         static void Main(string[] args)
         {
-            TLogger.WriteLine("출력");
-
             TLogger.DefaultPatternLayout 
                 = "%includefilter %level %date [%threadThread-%C:%M] %message%newline";
             TLogger.Configure();
+
+            Thread t1 = new Thread(Worker1);
+            Thread t2 = new Thread(Worker2);
+            Thread t3 = new Thread(Worker3);
+            t1.Start();
+            t2.Start();
+            t3.Start();
+
             TLogger.DebugWrite("프로그램 시작");
-            Console.ReadLine();
 
             for (int i = 0; i < 10; i++)
             {
@@ -25,7 +30,25 @@ namespace TLog
                 Thread.Sleep(500);
             }
 
+            t1.Join();
+            t1 = null;
+
             TLogger.DebugWrite("프로그램 종료");
+        }
+
+        private static void Worker1()
+        {
+            TLogger.DebugWriteLine("Worker1");
+        }
+
+        private static void Worker2()
+        {
+            TLogger.DebugWriteLine("Worker2");
+        }
+
+        private static void Worker3()
+        {
+            TLogger.DebugWriteLine("Worker3");
         }
     }
 }
