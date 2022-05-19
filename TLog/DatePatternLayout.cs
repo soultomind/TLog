@@ -8,6 +8,7 @@ namespace TLog
 {
     public class DatePatternLayout : PatternLayoutType
     {
+        public string Format { get; set; }
         public DatePatternLayout(string typeString) 
             : base(typeString)
         {
@@ -15,8 +16,7 @@ namespace TLog
 
         public override string ConvertArgument(object obj = null)
         {
-            string format = obj as string;
-            return DateTime.Now.ToString(format);
+            return DateTime.Now.ToString(Format);
         }
     }
 }
