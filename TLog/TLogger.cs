@@ -16,42 +16,44 @@ namespace TLog
         public static bool IsConfigure { get; private set; }
 
         /// <summary>
-        /// 클래스명 패턴레이아웃
+        /// 클래스명 패턴레이아웃 (%C)
         /// </summary>
         public static readonly IPatternLayoutType Class = new ClassPatternLayout("C");
 
         /// <summary>
-        /// 현재날짜 패턴레이아웃
+        /// 현재날짜 패턴레이아웃 (%date)
         /// </summary>
-        public static readonly IPatternLayoutType Date = new DatePatternLayout("date") { Format = "yyyy-MM-dd hh:mm:ss:ffff" };
+        public static readonly IPatternLayoutType Date = new DatePatternLayout("date")
+            { Format = "yyyy-MM-dd hh:mm:ss:ffff" };
 
         /// <summary>
-        /// DebugView Filter Include Filter 값 패턴레이아웃
+        /// DebugView Filter Include 값 패턴레이아웃 (%includefilter)
         /// </summary>
-        public static readonly IPatternLayoutType IncludeFilter = new IncludeFilterPatternLayout("includefilter");
+        public static readonly IPatternLayoutType IncludeFilter = new IncludeFilterPatternLayout("includefilter")
+            { IncludeFilter = Assembly.GetAssembly(typeof(IncludeFilterPatternLayout)).GetName().Name };
 
         /// <summary>
-        /// 로그레벨 패턴레이아웃
+        /// 로그레벨 패턴레이아웃 (%level)
         /// </summary>
         public static readonly IPatternLayoutType Level = new LevelPatternLayout("level");
 
         /// <summary>
-        /// 메소드명 패턴레이아웃
+        /// 메소드명 패턴레이아웃 (%M)
         /// </summary>
         public static readonly IPatternLayoutType Method = new MethodPatternLayout("M");
 
         /// <summary>
-        /// 메시지 패턴레이아웃
+        /// 메시지 패턴레이아웃 (%message)
         /// </summary>
         public static readonly IPatternLayoutType Message = new MessagePatternLayout("message");
 
         /// <summary>
-        /// 개행 패턴레이아웃
+        /// 개행 패턴레이아웃 (%newline)
         /// </summary>
         public static readonly IPatternLayoutType NewLine = new NewLinePatternLayout("newline");
 
         /// <summary>
-        /// 현재스레드 패턴레이아웃
+        /// 현재스레드 패턴레이아웃 (%thread)
         /// </summary>
         public static readonly IPatternLayoutType Thread = new ThreadPatternLayout("thread");
 
@@ -69,7 +71,29 @@ namespace TLog
         /// <remarks>
         /// 
         /// </remarks>
-        public static string DefaultPatternLayout = "%level %includefilter %C:%M %date %message";
+        public static string DefaultPatternLayout
+        {
+            get { return _DefaultPatternLayout; }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException();
+                }
+
+                if (String.IsNullOrEmpty(value))
+                {
+                    throw new ArgumentException();
+                }
+
+                if (value.IndexOf("%message") == -1)
+                {
+                    throw new ArgumentException("The value must contain a %message");
+                }
+                _DefaultPatternLayout = value;
+            }
+        }
+        private static string _DefaultPatternLayout = "%includefilter %date %level %message%newline"; // "%level %includefilter %C:%M %date %message";
         private static PatternLayoutFormat LayoutFormat = new PatternLayoutFormat();
 
 
@@ -114,47 +138,6 @@ namespace TLog
             }
             return false;
         }
-        
-        #endregion
-
-        /// <summary>
-        /// %date 패턴 사용시 사용되는 포맷입니다.
-        /// </summary>
-        public static string DateTimeFormat
-        {
-            get { return (Date as DatePatternLayout).Format; }
-            set { (Date as DatePatternLayout).Format = value; }
-        }
-
-        /// <summary>
-        /// 디버그뷰에서 사용되는 Filter/Include Filter 에 사용되는 속성입니다.
-        /// </summary>
-        public static string DebugViewIncludeFilter
-        {
-            get { return (IncludeFilter as IncludeFilterPatternLayout).IncludeFilter; }
-            set { (IncludeFilter as IncludeFilterPatternLayout).IncludeFilter = value; }
-        }
-
-        public static void Configure()
-        {
-            if (!IsConfigure)
-            {
-                // TODO: typeof(DefaultTraceListener) 시에 Type.Name 값이 RuntimeType 조사필요
-                if (HasStackFrameLayout("DefaultTraceListener"))
-                {
-                    LayoutFormat.Process(LayoutTypes, DefaultPatternLayout);
-                }
-
-                #region TODO TextWriter, EventLog 작업
-
-                //TextWriterTraceListener
-                //EventLogTraceListener 
-
-                #endregion
-
-                IsConfigure = true;
-            }
-        }
 
         private static string MakeMessage(LogLevel logLevel, string message)
         {
@@ -193,6 +176,58 @@ namespace TLog
 
             message = LayoutFormat.CreateFormatMessage(DefaultPatternLayout, args);
             return message;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// %date 패턴 사용시 사용되는 포맷입니다.
+        /// </summary>
+        public static string DateTimeFormat
+        {
+            get { return (Date as DatePatternLayout).Format; }
+            set { (Date as DatePatternLayout).Format = value; }
+        }
+
+        /// <summary>
+        /// 디버그뷰에서 사용되는 Filter/Include 값에 적용할 수 있는 속성입니다.
+        /// </summary>
+        public static string DebugViewIncludeFilter
+        {
+            get { return (IncludeFilter as IncludeFilterPatternLayout).IncludeFilter; }
+            set { (IncludeFilter as IncludeFilterPatternLayout).IncludeFilter = value; }
+        }
+
+
+        /// <summary>
+        /// 속성에 대한 설정을 적용합니다.
+        /// </summary>
+        public static void Configure()
+        {
+            if (!IsConfigure)
+            {
+                WriteLine("PatternLayout=" + DefaultPatternLayout);
+                // TODO: typeof(DefaultTraceListener) 시에 Type.Name 값이 RuntimeType 조사필요
+                if (HasStackFrameLayout("DefaultTraceListener"))
+                {
+                    LayoutFormat.Process(LayoutTypes, DefaultPatternLayout);
+                    WriteLine("LayoutFormat.Process");
+                }
+
+                #region TODO TextWriter, EventLog 작업
+
+                //TextWriterTraceListener
+                //EventLogTraceListener 
+
+                #endregion
+
+                IsConfigure = true;
+            }
+        }
+
+        internal static void WriteLine(string message)
+        {
+            Trace.WriteLine("TLog :: " + message);
         }
 
         public static void TraceWrite(string message)
@@ -240,6 +275,30 @@ namespace TLog
         public static void WarnWriteLine(string message)
         {
             message = MakeMessage(LogLevel.Warn, message);
+            Trace.WriteLine(message);
+        }
+
+        public static void ErrorWrite(string message)
+        {
+            message = MakeMessage(LogLevel.Error, message);
+            Trace.Write(message);
+        }
+
+        public static void ErrorWriteLine(string message)
+        {
+            message = MakeMessage(LogLevel.Error, message);
+            Trace.WriteLine(message);
+        }
+
+        public static void FatalWrite(string message)
+        {
+            message = MakeMessage(LogLevel.Fatal, message);
+            Trace.Write(message);
+        }
+
+        public static void FatalWriteLine(string message)
+        {
+            message = MakeMessage(LogLevel.Fatal, message);
             Trace.WriteLine(message);
         }
     }
