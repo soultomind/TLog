@@ -11,8 +11,8 @@ namespace TLog
     {
         static void Main(string[] args)
         {
-            TLogger.DefaultPatternLayout 
-                = "%includefilter %level %date [%threadThread-%C:%M] %message%newline";
+            TLogger.DefaultPatternLayout = "%includefilter %level %date [%threadThread-%C:%M] %message%newline";
+            TLogger.DebugViewIncludeFilter = "CLIPSOFT";
             TLogger.Configure();
 
             Thread t1 = new Thread(Worker1);
@@ -32,6 +32,12 @@ namespace TLog
 
             t1.Join();
             t1 = null;
+
+            t2.Join();
+            t2 = null;
+
+            t3.Join();
+            t3 = null;
 
             TLogger.DebugWrite("프로그램 종료");
         }
