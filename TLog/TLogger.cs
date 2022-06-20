@@ -13,7 +13,13 @@ namespace TLog
     /// </summary>
     public class TLogger
     {
-        public static bool IsConfigure { get; private set; }
+        private static readonly object _ConfigureLock = new object();
+        public static bool IsConfigure
+        {
+            get { return _IsConfigure; }
+            private set { _IsConfigure = value; }
+        }
+        private static volatile bool _IsConfigure;
 
         /// <summary>
         /// 클래스명 패턴레이아웃 (%C)
@@ -93,6 +99,9 @@ namespace TLog
                 _DefaultPatternLayout = value;
             }
         }
+
+        private static LogLevel _UseLogLevel;
+
         private static string _DefaultPatternLayout = "%includefilter %date %level %message%newline"; // "%level %includefilter %C:%M %date %message";
         private static PatternLayoutFormat LayoutFormat = new PatternLayoutFormat();
 
@@ -186,7 +195,13 @@ namespace TLog
         public static string DateTimeFormat
         {
             get { return (Date as DatePatternLayout).Format; }
-            set { (Date as DatePatternLayout).Format = value; }
+            set
+            {
+                if (!IsConfigure)
+                {
+                    (Date as DatePatternLayout).Format = value;
+                }
+            }
         }
 
         /// <summary>
@@ -195,33 +210,50 @@ namespace TLog
         public static string DebugViewIncludeFilter
         {
             get { return (IncludeFilter as IncludeFilterPatternLayout).IncludeFilter; }
-            set { (IncludeFilter as IncludeFilterPatternLayout).IncludeFilter = value; }
+            set
+            {
+                if (!IsConfigure)
+                {
+                    (IncludeFilter as IncludeFilterPatternLayout).IncludeFilter = value;
+                }
+            }
         }
 
+        public static void Configure()
+        {
+            Configure(LogLevel.Debug);
+        }
 
         /// <summary>
         /// 속성에 대한 설정을 적용합니다.
         /// </summary>
-        public static void Configure()
+        public static void Configure(LogLevel logLevel)
         {
             if (!IsConfigure)
             {
-                WriteLine("PatternLayout=" + DefaultPatternLayout);
-                // TODO: typeof(DefaultTraceListener) 시에 Type.Name 값이 RuntimeType 조사필요
-                if (HasStackFrameLayout("DefaultTraceListener"))
+                lock (_ConfigureLock)
                 {
-                    LayoutFormat.Process(LayoutTypes, DefaultPatternLayout);
-                    WriteLine("LayoutFormat.Process");
+                    if (!IsConfigure)
+                    {
+                        _UseLogLevel = logLevel;
+                        WriteLine("PatternLayout=" + DefaultPatternLayout);
+                        // TODO: typeof(DefaultTraceListener) 시에 Type.Name 값이 RuntimeType 조사필요
+                        if (HasStackFrameLayout("DefaultTraceListener"))
+                        {
+                            LayoutFormat.Process(LayoutTypes, DefaultPatternLayout);
+                            WriteLine("LayoutFormat.Process");
+                        }
+
+                        #region TODO TextWriter, EventLog 작업
+
+                        // TextWriterTraceListener
+                        // EventLogTraceListener 
+
+                        #endregion
+
+                        IsConfigure = true;
+                    }
                 }
-
-                #region TODO TextWriter, EventLog 작업
-
-                //TextWriterTraceListener
-                //EventLogTraceListener 
-
-                #endregion
-
-                IsConfigure = true;
             }
         }
 
@@ -232,74 +264,110 @@ namespace TLog
 
         public static void TraceWrite(string message)
         {
-            message = MakeMessage(LogLevel.Trace, message);
-            Trace.Write(message);
+            if (IsConfigure && _UseLogLevel.IsEnabled(LogLevel.Trace))
+            {
+                message = MakeMessage(LogLevel.Trace, message);
+                Trace.Write(message); 
+            }
         }
 
         public static void TraceWriteLine(string message)
         {
-            message = MakeMessage(LogLevel.Trace, message);
-            Trace.WriteLine(message);
+            if (IsConfigure && _UseLogLevel.IsEnabled(LogLevel.Trace))
+            {
+                message = MakeMessage(LogLevel.Trace, message);
+                Trace.WriteLine(message); 
+            }
         }
 
         public static void DebugWrite(string message)
         {
-            message = MakeMessage(LogLevel.Debug, message);
-            Trace.Write(message);
+            if (IsConfigure && _UseLogLevel.IsEnabled(LogLevel.Debug))
+            {
+                message = MakeMessage(LogLevel.Debug, message);
+                Trace.Write(message); 
+            }
         }
 
         public static void DebugWriteLine(string message)
         {
-            message = MakeMessage(LogLevel.Debug, message);
-            Trace.WriteLine(message);
+            if (IsConfigure && _UseLogLevel.IsEnabled(LogLevel.Debug))
+            {
+                message = MakeMessage(LogLevel.Debug, message);
+                Trace.WriteLine(message); 
+            }
         }
 
         public static void InfoWrite(string message)
         {
-            message = MakeMessage(LogLevel.Info, message);
-            Trace.Write(message);
+            if (IsConfigure && _UseLogLevel.IsEnabled(LogLevel.Info))
+            {
+                message = MakeMessage(LogLevel.Info, message);
+                Trace.Write(message); 
+            }
         }
 
         public static void InfoWriteLine(string message)
         {
-            message = MakeMessage(LogLevel.Info, message);
-            Trace.WriteLine(message);
+            if (IsConfigure && _UseLogLevel.IsEnabled(LogLevel.Info))
+            {
+                message = MakeMessage(LogLevel.Info, message);
+                Trace.WriteLine(message); 
+            }
         }
 
         public static void WarnWrite(string message)
         {
-            message = MakeMessage(LogLevel.Warn, message);
-            Trace.Write(message);
+            if (IsConfigure && _UseLogLevel.IsEnabled(LogLevel.Warn))
+            {
+                message = MakeMessage(LogLevel.Warn, message);
+                Trace.Write(message); 
+            }
         }
 
         public static void WarnWriteLine(string message)
         {
-            message = MakeMessage(LogLevel.Warn, message);
-            Trace.WriteLine(message);
+            if (IsConfigure && _UseLogLevel.IsEnabled(LogLevel.Warn))
+            {
+                message = MakeMessage(LogLevel.Warn, message);
+                Trace.WriteLine(message); 
+            }
         }
 
         public static void ErrorWrite(string message)
         {
-            message = MakeMessage(LogLevel.Error, message);
-            Trace.Write(message);
+            if (IsConfigure && _UseLogLevel.IsEnabled(LogLevel.Error))
+            {
+                message = MakeMessage(LogLevel.Error, message);
+                Trace.Write(message); 
+            }
         }
 
         public static void ErrorWriteLine(string message)
         {
-            message = MakeMessage(LogLevel.Error, message);
-            Trace.WriteLine(message);
+            if (IsConfigure && _UseLogLevel.IsEnabled(LogLevel.Error))
+            {
+                message = MakeMessage(LogLevel.Error, message);
+                Trace.WriteLine(message); 
+            }
         }
 
         public static void FatalWrite(string message)
         {
-            message = MakeMessage(LogLevel.Fatal, message);
-            Trace.Write(message);
+            if (IsConfigure && _UseLogLevel.IsEnabled(LogLevel.Fatal))
+            {
+                message = MakeMessage(LogLevel.Fatal, message);
+                Trace.Write(message);
+            }
         }
 
         public static void FatalWriteLine(string message)
         {
-            message = MakeMessage(LogLevel.Fatal, message);
-            Trace.WriteLine(message);
+            if (IsConfigure && _UseLogLevel.IsEnabled(LogLevel.Fatal))
+            {
+                message = MakeMessage(LogLevel.Fatal, message);
+                Trace.WriteLine(message);
+            }
         }
     }
 }

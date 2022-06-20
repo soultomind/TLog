@@ -44,7 +44,7 @@
     <Compile Include="DatePatternLayout.cs" />
     <Compile Include="IncludeFilterPatternLayout.cs" />
     <Compile Include="IPatternLayoutType.cs" />
-    <Compile Include="LogLevel.cs" />
+    <Compile Include="Level.cs" />
     <Compile Include="LevelPatternLayout.cs" />
     <Compile Include="MessagePatternLayout.cs" />
     <Compile Include="MethodPatternLayout.cs" />

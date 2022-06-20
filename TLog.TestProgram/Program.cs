@@ -11,50 +11,18 @@ namespace TLog
     {
         static void Main(string[] args)
         {
-            TLogger.DefaultPatternLayout = "%includefilter %level %date [%threadThread-%C:%M] %message%newline";
-            TLogger.DebugViewIncludeFilter = "CLIPSOFT";
+            TLogger.DefaultPatternLayout = "%level %includefilter %date [Thread%thread-%C:%M] %message";
+            TLogger.DebugViewIncludeFilter = "TLog";
             TLogger.Configure();
 
-            Thread t1 = new Thread(Worker1);
-            Thread t2 = new Thread(Worker2);
-            Thread t3 = new Thread(Worker3);
-            t1.Start();
-            t2.Start();
-            t3.Start();
+            TLogger.TraceWriteLine("TRACE");
+            TLogger.DebugWriteLine("DEBUG");
+            TLogger.InfoWriteLine("INFO");
+            TLogger.WarnWriteLine("WARN");
+            TLogger.ErrorWriteLine("ERROR");
+            TLogger.FatalWriteLine("FATAL");
 
-            TLogger.DebugWrite("프로그램 시작");
-
-            for (int i = 0; i < 10; i++)
-            {
-                TLogger.DebugWrite(".");
-                Thread.Sleep(500);
-            }
-
-            t1.Join();
-            t1 = null;
-
-            t2.Join();
-            t2 = null;
-
-            t3.Join();
-            t3 = null;
-
-            TLogger.DebugWrite("프로그램 종료");
-        }
-
-        private static void Worker1()
-        {
-            TLogger.DebugWriteLine("Worker1");
-        }
-
-        private static void Worker2()
-        {
-            TLogger.DebugWriteLine("Worker2");
-        }
-
-        private static void Worker3()
-        {
-            TLogger.DebugWriteLine("Worker3");
+            System.Console.ReadKey();
         }
     }
 }
