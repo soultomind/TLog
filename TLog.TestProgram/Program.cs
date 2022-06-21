@@ -11,9 +11,9 @@ namespace TLog
     {
         static void Main(string[] args)
         {
-            TLogger.DefaultPatternLayout = "%includefilter %level %date [Thread%thread-%C:%M] %message%newline";
+            TLogger.DefaultPatternLayout = "%level %includefilter %date [Thread%thread-%C:%M] %message%newline";
             TLogger.DebugViewIncludeFilter = "TLog";
-            TLogger.Configure(Level.Debug);
+            TLogger.Configure(Level.Warn);
 
             TLogger.Trace("TRACE");
             TLogger.Debug("DEBUG");
