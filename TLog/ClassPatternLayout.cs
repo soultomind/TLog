@@ -9,6 +9,12 @@ namespace TLog
 {
     public class ClassPatternLayout : PatternLayoutType
     {
+        public bool IsFullName
+        {
+            get { return _isFullName; }
+            set { _isFullName = value; }
+        }
+        private bool _isFullName = true;
         public ClassPatternLayout(string typeString) 
             : base(typeString)
         {
@@ -18,7 +24,14 @@ namespace TLog
         public override string ConvertArgument(object obj = null)
         {
             StackFrame sf = obj as StackFrame;
-            return sf.GetMethod().ReflectedType.Name;
+            if (_isFullName)
+            {
+                return sf.GetMethod().ReflectedType.FullName;
+            }
+            else
+            {
+                return sf.GetMethod().ReflectedType.Name;
+            }
         }
     }
 }

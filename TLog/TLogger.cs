@@ -96,6 +96,11 @@ namespace TLog
                 {
                     throw new ArgumentException("The value must contain a %message");
                 }
+
+                if (value.IndexOf("%newline") == -1)
+                {
+                    throw new ArgumentException("The value must contain a %newline");
+                }
                 _DefaultPatternLayout = value;
             }
         }
@@ -188,6 +193,18 @@ namespace TLog
         }
 
         #endregion
+
+        public static bool IsFullName
+        {
+            get { return (Class as ClassPatternLayout).IsFullName; }
+            set
+            {
+                if (!IsConfigure)
+                {
+                    (Class as ClassPatternLayout).IsFullName = value;
+                }
+            }
+        }
 
         /// <summary>
         /// %date 패턴 사용시 사용되는 포맷입니다.
