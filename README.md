@@ -7,7 +7,7 @@ System.Diagnostics.Trace 래퍼 클래스
 ```
 TLogger.DefaultPatternLayout = "%includefilter %level %date [%C:%M] %message%newline"
 ```
-위와 같이 DefaultPatternLayout 속성을 통하여 출력될 패턴 레이아웃 형태를 설정 할 수 있습니다. 타입에 해당 하는 문자열에 앞에 '<strong>%</strong>' 붙여서 설정합니다.
+위와 같이 DefaultPatternLayout 속성을 통하여 출력될 패턴 레이아웃 형태를 설정 할 수 있습니다. 타입에 해당 하는 문자열 앞에 '<strong>%</strong>' 붙여서 설정합니다.
 
 #### ClassPatternLayout
 - 로그 출력시 클래스(해당 로그 출력 호출스택 위치의 클래스)명을 제공합니다. 
