@@ -19,8 +19,9 @@ namespace TLog
 
         public int CompareTo(object obj)
         {
-            PatternLayoutTypeComparable other = obj as PatternLayoutTypeComparable;
-            return this.IndexOf.CompareTo(IndexOf);
+            PatternLayoutTypeComparable thisObj = this;
+            PatternLayoutTypeComparable otherObj = obj as PatternLayoutTypeComparable;
+            return thisObj.IndexOf.CompareTo(IndexOf);
         }
     }
 }
