@@ -11,16 +11,16 @@ namespace TLog
     {
         static void Main(string[] args)
         {
-            TLogger.DefaultPatternLayout = "%level %includefilter %date [Thread%thread-%C:%M] %message";
+            TLogger.DefaultPatternLayout = "%level %includefilter %date [Thread%thread-%C:%M] %message%newline";
             TLogger.DebugViewIncludeFilter = "TLog";
-            TLogger.Configure();
+            TLogger.Configure(Level.Warn);
 
-            TLogger.TraceWriteLine("TRACE");
-            TLogger.DebugWriteLine("DEBUG");
-            TLogger.InfoWriteLine("INFO");
-            TLogger.WarnWriteLine("WARN");
-            TLogger.ErrorWriteLine("ERROR");
-            TLogger.FatalWriteLine("FATAL");
+            TLogger.Trace("TRACE");
+            TLogger.Debug("DEBUG");
+            TLogger.Info("INFO");
+            TLogger.Warn("WARN");
+            TLogger.Error("ERROR");
+            TLogger.Fatal("FATAL");
 
             System.Console.ReadKey();
         }

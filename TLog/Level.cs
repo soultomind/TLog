@@ -24,9 +24,9 @@ namespace TLog
             IntValue = intValue;
         }
 
-        public bool IsEnabled(Level logLevel)
+        public bool IsEnabled(Level level)
         {
-            if (logLevel.IntValue <= IntValue)
+            if (level.IntValue <= IntValue)
             {
                 return true;
             }
