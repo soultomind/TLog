@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TLog
 {
-    public interface IPatternLayoutType
+    public interface IPatternLayout
     {
         string TypeString { get; }
 

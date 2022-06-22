@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TLog
 {
-    public class IncludeFilterPatternLayout : PatternLayoutType
+    public class IncludeFilterPatternLayout : PatternLayout
     {
         public string IncludeFilter
         {

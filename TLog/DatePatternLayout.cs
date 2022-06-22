@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TLog
 {
-    public class DatePatternLayout : PatternLayoutType
+    public class DatePatternLayout : PatternLayout
     {
         public string Format
         {

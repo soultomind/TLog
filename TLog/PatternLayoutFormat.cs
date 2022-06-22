@@ -22,12 +22,12 @@ namespace TLog
             TypeOrders = new List<PatternLayoutTypeComparable>();
         }
 
-        public void Process(IPatternLayoutType[] layoutTypes, string patternLayoutFormat)
+        public void Process(IPatternLayout[] layoutTypes, string patternLayoutFormat)
         {
             List<PatternLayoutTypeComparable> list = new List<PatternLayoutTypeComparable>();
 
             int indexOf = -1;
-            foreach (PatternLayoutType layoutType in layoutTypes)
+            foreach (PatternLayout layoutType in layoutTypes)
             {
                 indexOf = layoutType.IndexOf(patternLayoutFormat);
                 if (indexOf != -1)
@@ -51,7 +51,7 @@ namespace TLog
                         string format = patternLayoutFormat;
                         for (int i = 0; i < TypeOrders.Count; i++)
                         {
-                            IPatternLayoutType layoutType = TypeOrders[i].LayoutType;
+                            IPatternLayout layoutType = TypeOrders[i].LayoutType;
                             format = format.Replace(layoutType.LayoutTypeString, "{" + i + "}");
                         }
 

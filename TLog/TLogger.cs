@@ -24,49 +24,49 @@ namespace TLog
         /// <summary>
         /// 클래스명 패턴레이아웃 (%C)
         /// </summary>
-        public static readonly IPatternLayoutType Class = new ClassPatternLayout("C");
+        public static readonly IPatternLayout Class = new ClassPatternLayout("C");
 
         /// <summary>
         /// 현재날짜 패턴레이아웃 (%date)
         /// </summary>
-        public static readonly IPatternLayoutType Date = new DatePatternLayout("date")
+        public static readonly IPatternLayout Date = new DatePatternLayout("date")
             { Format = "yyyy-MM-dd hh:mm:ss:ffff" };
 
         /// <summary>
         /// DebugView Filter Include 값 패턴레이아웃 (%includefilter)
         /// </summary>
-        public static readonly IPatternLayoutType IncludeFilter = new IncludeFilterPatternLayout("includefilter")
+        public static readonly IPatternLayout IncludeFilter = new IncludeFilterPatternLayout("includefilter")
             { IncludeFilter = Assembly.GetAssembly(typeof(IncludeFilterPatternLayout)).GetName().Name };
 
         /// <summary>
         /// 로그레벨 패턴레이아웃 (%level)
         /// </summary>
-        public static readonly IPatternLayoutType Level = new LevelPatternLayout("level");
+        public static readonly IPatternLayout Level = new LevelPatternLayout("level");
 
         /// <summary>
         /// 메소드명 패턴레이아웃 (%M)
         /// </summary>
-        public static readonly IPatternLayoutType Method = new MethodPatternLayout("M");
+        public static readonly IPatternLayout Method = new MethodPatternLayout("M");
 
         /// <summary>
         /// 메시지 패턴레이아웃 (%message)
         /// </summary>
-        public static readonly IPatternLayoutType Message = new MessagePatternLayout("message");
+        public static readonly IPatternLayout Message = new MessagePatternLayout("message");
 
         /// <summary>
         /// 개행 패턴레이아웃 (%newline)
         /// </summary>
-        public static readonly IPatternLayoutType NewLine = new NewLinePatternLayout("newline");
+        public static readonly IPatternLayout NewLine = new NewLinePatternLayout("newline");
 
         /// <summary>
         /// 현재스레드 패턴레이아웃 (%thread)
         /// </summary>
-        public static readonly IPatternLayoutType Thread = new ThreadPatternLayout("thread");
+        public static readonly IPatternLayout Thread = new ThreadPatternLayout("thread");
 
         /// <summary>
         /// 패턴레이아웃 배열
         /// </summary>
-        public static readonly IPatternLayoutType[] LayoutTypes = new IPatternLayoutType[] 
+        public static readonly IPatternLayout[] Layouts = new IPatternLayout[] 
         {
             Class, Date, IncludeFilter, Level, Method, Message, NewLine, Thread
         };
@@ -135,7 +135,7 @@ namespace TLog
             return false;
         }
 
-        private static bool IsReflectPatternLayout(IPatternLayoutType layoutType)
+        private static bool IsReflectPatternLayout(IPatternLayout layoutType)
         {
             return layoutType.GetType() == Class.GetType() || layoutType.GetType() == Method.GetType();
         }
@@ -144,7 +144,7 @@ namespace TLog
         {
             foreach (var layoutTypeComparable in layoutTypeComparables)
             {
-                IPatternLayoutType layoutType = layoutTypeComparable.LayoutType;
+                IPatternLayout layoutType = layoutTypeComparable.LayoutType;
                 if (IsReflectPatternLayout(layoutType))
                 {
                     return true;
@@ -168,7 +168,7 @@ namespace TLog
             for (int i = 0; i < LayoutFormat.TypeOrders.Count; i++)
             {
                 // Class, Date, IncludeFilter, Level, Method, Message, NewLine, Thread
-                IPatternLayoutType layoutType = LayoutFormat.TypeOrders[i].LayoutType;
+                IPatternLayout layoutType = LayoutFormat.TypeOrders[i].LayoutType;
                 if (IsReflectPatternLayout(layoutType))
                 {
                     arg = layoutType.ConvertArgument(sf);
@@ -262,7 +262,7 @@ namespace TLog
                         // TODO: typeof(DefaultTraceListener) 시에 Type.Name 값이 RuntimeType 조사필요
                         if (HasStackFrameLayout("DefaultTraceListener"))
                         {
-                            LayoutFormat.Process(LayoutTypes, DefaultPatternLayout);
+                            LayoutFormat.Process(Layouts, DefaultPatternLayout);
                             WriteLine("LayoutFormat.Process");
                         }
 

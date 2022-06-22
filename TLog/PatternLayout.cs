@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace TLog
 {
-    public abstract class PatternLayoutType : IPatternLayoutType
+    public abstract class PatternLayout : IPatternLayout
     {
         public string TypeString { get; private set; }
 
-        public PatternLayoutType(string typeString)
+        public PatternLayout(string typeString)
         {
             TypeString = typeString;
         }

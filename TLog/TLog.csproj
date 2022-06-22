@@ -43,14 +43,14 @@
     <Compile Include="ClassPatternLayout.cs" />
     <Compile Include="DatePatternLayout.cs" />
     <Compile Include="IncludeFilterPatternLayout.cs" />
-    <Compile Include="IPatternLayoutType.cs" />
+    <Compile Include="IPatternLayout.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="LevelPatternLayout.cs" />
     <Compile Include="MessagePatternLayout.cs" />
     <Compile Include="MethodPatternLayout.cs" />
     <Compile Include="NewLinePatternLayout.cs" />
     <Compile Include="PatternLayoutFormat.cs" />
-    <Compile Include="PatternLayoutType.cs" />
+    <Compile Include="PatternLayout.cs" />
     <Compile Include="PatternLayoutTypeComparable.cs" />
     <Compile Include="ThreadPatternLayout.cs" />
     <Compile Include="TLogger.cs" />

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TLog
 {
-    public class ClassPatternLayout : PatternLayoutType
+    public class ClassPatternLayout : PatternLayout
     {
         public bool IsFullName
         {

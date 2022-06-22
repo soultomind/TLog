@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TLog
 {
-    public class LevelPatternLayout : PatternLayoutType
+    public class LevelPatternLayout : PatternLayout
     {
         public LevelPatternLayout(string typeString) 
             : base(typeString)

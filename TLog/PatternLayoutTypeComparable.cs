@@ -9,9 +9,9 @@ namespace TLog
     public class PatternLayoutTypeComparable : IComparable
     {
         public int IndexOf { get; private set; }
-        public IPatternLayoutType LayoutType { get; private set; }
+        public IPatternLayout LayoutType { get; private set; }
 
-        public PatternLayoutTypeComparable(int indexOf, IPatternLayoutType layoutType)
+        public PatternLayoutTypeComparable(int indexOf, IPatternLayout layoutType)
         {
             IndexOf = indexOf;
             LayoutType = layoutType;
