@@ -24,7 +24,7 @@ _______________________
 - 로그 출력시 현재 날짜를 제공합니다.
   + 패턴레이아웃은 "<strong>date</strong>" 문자열이며 DateTimeFormat 속성을 통하여 패턴을 설정 할 수 있습니다.
   ```
-  TLogger.DebugViewIncludeFilter = "yyyy-MM-dd hh:mm:ss:ffff";
+  TLogger.DateTimeFormat = "yyyy-MM-dd hh:mm:ss:ffff";
   ```
 _______________________
 #### IncludeFilterPatternLayout
