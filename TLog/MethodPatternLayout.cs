@@ -15,9 +15,9 @@ namespace TLog
 
         }
 
-        public override string ConvertArgument(object obj = null)
+        public override string ConvertArgument(IFormatMessage formatMessage)
         {
-            StackFrame sf = obj as StackFrame;
+            StackFrame sf = formatMessage.StackFrame;
             return sf.GetMethod().Name;
         }
     }

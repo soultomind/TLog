@@ -14,6 +14,6 @@ namespace TLog
 
         int IndexOf(string input);
 
-        string ConvertArgument(object obj = null);
+        string ConvertArgument(IFormatMessage formatMessage);
     }
 }

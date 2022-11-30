@@ -42,6 +42,8 @@
   <ItemGroup>
     <Compile Include="ClassPatternLayout.cs" />
     <Compile Include="DatePatternLayout.cs" />
+    <Compile Include="FormatMessage.cs" />
+    <Compile Include="IFormatMessage.cs" />
     <Compile Include="IncludeFilterPatternLayout.cs" />
     <Compile Include="IPatternLayout.cs" />
     <Compile Include="Level.cs" />

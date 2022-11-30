@@ -32,6 +32,6 @@ namespace TLog
             return -1;
         }
 
-        public abstract string ConvertArgument(object obj = null);
+        public abstract string ConvertArgument(IFormatMessage formatMessage);
     }
 }

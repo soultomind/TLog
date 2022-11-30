@@ -15,7 +15,7 @@ namespace TLog
 
         }
 
-        public override string ConvertArgument(object obj = null)
+        public override string ConvertArgument(IFormatMessage formatMessage)
         {
             return Thread.CurrentThread.ManagedThreadId.ToString();
         }

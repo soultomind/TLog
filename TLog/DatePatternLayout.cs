@@ -24,7 +24,7 @@ namespace TLog
         {
         }
 
-        public override string ConvertArgument(object obj = null)
+        public override string ConvertArgument(IFormatMessage formatMessage)
         {
             return DateTime.Now.ToString(Format);
         }

@@ -120,6 +120,7 @@ namespace TLog
         public static string EventLogLayout = DefaultPatternLayout;
 
         private static Level _UseLevel;
+        
 
         #region Private
         private static bool HasStackFrameLayout(string typeName)
@@ -155,40 +156,21 @@ namespace TLog
 
         private static string MakeMessage(Level logLevel, string message)
         {
-            // TOOD: 로그레벨이 현재 사용가능한지 체크 후 출력 처리
-            //       StringBuilder 를 활용하여 메시지를 생성 필요
-            //       if else 문 없애기 필요
-
-            string[] args = new string[LayoutFormat.TypeOrders.Count];
-            StackFrame sf = null;
+            IFormatMessage formatMessage = new FormatMessage();
+            formatMessage.Level = logLevel;
+            formatMessage.Message = message;
             if (HasReflectPatternLayout(LayoutFormat.TypeOrders))
             {
-                sf = new StackFrame(2, true);
+                formatMessage.StackFrame = new StackFrame(2, true);
             }
 
-            StringBuilder builder = new StringBuilder(128);
-            string arg = String.Empty;
+            // TODO: 더 개선 필요
+            string[] args = new string[LayoutFormat.TypeOrders.Count];
             for (int i = 0; i < LayoutFormat.TypeOrders.Count; i++)
             {
                 // Class, Date, IncludeFilter, Level, Method, Message, NewLine, Thread
                 IPatternLayout layoutType = LayoutFormat.TypeOrders[i].LayoutType;
-                if (IsReflectPatternLayout(layoutType))
-                {
-                    arg = layoutType.ConvertArgument(sf);
-                }
-                else if (layoutType.GetType() == Level.GetType())
-                {
-                    arg = layoutType.ConvertArgument(logLevel);
-                }
-                else if (layoutType.GetType() == Message.GetType())
-                {
-                    arg = layoutType.ConvertArgument(message);
-                }
-                else
-                {
-                    arg = layoutType.ConvertArgument();
-                }
-                args[i] = arg;
+                args[i] = layoutType.ConvertArgument(formatMessage);
             }
 
             message = LayoutFormat.CreateFormatMessage(DefaultPatternLayout, args);

@@ -14,10 +14,10 @@ namespace TLog
 
         }
 
-        public override string ConvertArgument(object obj = null)
+        public override string ConvertArgument(IFormatMessage formatMessage)
         {
-            Level logLevel = obj as Level;
-            return logLevel.Name.ToUpper();
+            Level level = formatMessage.Level;
+            return level.Name.ToUpper();
         }
     }
 }
