@@ -156,6 +156,8 @@ namespace TLog
         private static string MakeMessage(Level logLevel, string message)
         {
             // TOOD: 로그레벨이 현재 사용가능한지 체크 후 출력 처리
+            //       StringBuilder 를 활용하여 메시지를 생성 필요
+            //       if else 문 없애기 필요
 
             string[] args = new string[LayoutFormat.TypeOrders.Count];
             StackFrame sf = null;
@@ -164,6 +166,7 @@ namespace TLog
                 sf = new StackFrame(2, true);
             }
 
+            StringBuilder builder = new StringBuilder(128);
             string arg = String.Empty;
             for (int i = 0; i < LayoutFormat.TypeOrders.Count; i++)
             {
@@ -249,7 +252,7 @@ namespace TLog
         /// <summary>
         /// 속성에 대한 설정을 적용합니다.
         /// </summary>
-        public static void Configure(Level logLevel)
+        public static void Configure(Level level)
         {
             if (!IsConfigure)
             {
@@ -257,7 +260,7 @@ namespace TLog
                 {
                     if (!IsConfigure)
                     {
-                        _UseLevel = logLevel;
+                        _UseLevel = level;
                         WriteLine("PatternLayout=" + DefaultPatternLayout);
                         // TODO: typeof(DefaultTraceListener) 시에 Type.Name 값이 RuntimeType 조사필요
                         if (HasStackFrameLayout("DefaultTraceListener"))
