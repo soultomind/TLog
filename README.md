@@ -3,7 +3,7 @@ System.Diagnostics.Trace 래퍼 클래스
 
 해당 프로젝트는 간단한 패턴레이아웃과 로그레벨을 제공합니다.
 
-## 패턴레이아웃
+## PatternLayout
 ```
 TLogger.DefaultPatternLayout = "%includefilter %level %date [%C:%M] %message%newline"
 ```
