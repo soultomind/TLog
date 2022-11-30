@@ -136,9 +136,19 @@ namespace TLog
             return false;
         }
 
-        private static bool IsReflectPatternLayout(IPatternLayout layoutType)
+        private static string MakeMessage(Level logLevel, string message)
         {
-            return layoutType.GetType() == Class.GetType() || layoutType.GetType() == Method.GetType();
+            IFormatMessage formatMessage = new FormatMessage();
+            formatMessage.Level = logLevel;
+            formatMessage.Message = message;
+            if (HasReflectPatternLayout(LayoutFormat.TypeOrders))
+            {
+                formatMessage.StackFrame = new StackFrame(2, true);
+            }
+
+            string[] args = CreateLayoutTypeArguments(formatMessage);
+            message = LayoutFormat.CreateFormatMessage(DefaultPatternLayout, args);
+            return message;
         }
 
         private static bool HasReflectPatternLayout(List<PatternLayoutTypeComparable> layoutTypeComparables)
@@ -154,17 +164,13 @@ namespace TLog
             return false;
         }
 
-        private static string MakeMessage(Level logLevel, string message)
+        private static bool IsReflectPatternLayout(IPatternLayout layoutType)
         {
-            IFormatMessage formatMessage = new FormatMessage();
-            formatMessage.Level = logLevel;
-            formatMessage.Message = message;
-            if (HasReflectPatternLayout(LayoutFormat.TypeOrders))
-            {
-                formatMessage.StackFrame = new StackFrame(2, true);
-            }
+            return layoutType.GetType() == Class.GetType() || layoutType.GetType() == Method.GetType();
+        }
 
-            // TODO: 더 개선 필요
+        private static string[] CreateLayoutTypeArguments(IFormatMessage formatMessage)
+        {
             string[] args = new string[LayoutFormat.TypeOrders.Count];
             for (int i = 0; i < LayoutFormat.TypeOrders.Count; i++)
             {
@@ -172,9 +178,7 @@ namespace TLog
                 IPatternLayout layoutType = LayoutFormat.TypeOrders[i].LayoutType;
                 args[i] = layoutType.ConvertArgument(formatMessage);
             }
-
-            message = LayoutFormat.CreateFormatMessage(DefaultPatternLayout, args);
-            return message;
+            return args;
         }
 
         #endregion
