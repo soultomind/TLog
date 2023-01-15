@@ -136,7 +136,7 @@ namespace TLog
             return false;
         }
 
-        private static string MakeMessage(Level logLevel, string message)
+        private static string CreateLayoutMessage(Level logLevel, string message)
         {
             IFormatMessage formatMessage = new FormatMessage();
             formatMessage.Level = logLevel;
@@ -277,7 +277,7 @@ namespace TLog
         {
             if (IsConfigure && IsEnabled(TLog.Level.Trace))
             {
-                message = MakeMessage(TLog.Level.Trace, message);
+                message = CreateLayoutMessage(TLog.Level.Trace, message);
                 System.Diagnostics.Trace.Write(message); 
             }
         }
@@ -286,7 +286,7 @@ namespace TLog
         {
             if (IsConfigure && IsEnabled(TLog.Level.Debug))
             {
-                message = MakeMessage(TLog.Level.Debug, message);
+                message = CreateLayoutMessage(TLog.Level.Debug, message);
                 System.Diagnostics.Trace.Write(message); 
             }
         }
@@ -295,7 +295,7 @@ namespace TLog
         {
             if (IsConfigure && IsEnabled(TLog.Level.Info))
             {
-                message = MakeMessage(TLog.Level.Info, message);
+                message = CreateLayoutMessage(TLog.Level.Info, message);
                 System.Diagnostics.Trace.Write(message); 
             }
         }
@@ -304,7 +304,7 @@ namespace TLog
         {
             if (IsConfigure && IsEnabled(TLog.Level.Warn))
             {
-                message = MakeMessage(TLog.Level.Warn, message);
+                message = CreateLayoutMessage(TLog.Level.Warn, message);
                 System.Diagnostics.Trace.Write(message); 
             }
         }
@@ -313,7 +313,7 @@ namespace TLog
         {
             if (IsConfigure && IsEnabled(TLog.Level.Error))
             {
-                message = MakeMessage(TLog.Level.Error, message);
+                message = CreateLayoutMessage(TLog.Level.Error, message);
                 System.Diagnostics.Trace.Write(message); 
             }
         }
@@ -322,7 +322,7 @@ namespace TLog
         {
             if (IsConfigure && IsEnabled(TLog.Level.Fatal))
             {
-                message = MakeMessage(TLog.Level.Fatal, message);
+                message = CreateLayoutMessage(TLog.Level.Fatal, message);
                 System.Diagnostics.Trace.Write(message);
             }
         }
