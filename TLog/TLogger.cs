@@ -33,7 +33,7 @@ namespace TLog
             { Format = "yyyy-MM-dd hh:mm:ss:ffff" };
 
         /// <summary>
-        /// DebugView Filter Include 값 패턴레이아웃 (%includefilter)
+        /// DebugTool Filter Include 값 패턴레이아웃 (%includefilter)
         /// </summary>
         public static readonly IPatternLayout IncludeFilter = new IncludeFilterPatternLayout("includefilter")
             { IncludeFilter = Assembly.GetAssembly(typeof(IncludeFilterPatternLayout)).GetName().Name };
@@ -101,6 +101,7 @@ namespace TLog
                 {
                     throw new ArgumentException("The value must contain a %newline");
                 }
+
                 _DefaultPatternLayout = value;
             }
         }
@@ -211,9 +212,9 @@ namespace TLog
         }
 
         /// <summary>
-        /// 디버그뷰에서 사용되는 Filter/Include 값에 적용할 수 있는 속성입니다.
+        /// 디버그툴에서 사용되는 Filter/Include 값에 적용할 수 있는 속성입니다.
         /// </summary>
-        public static string DebugViewIncludeFilter
+        public static string DebugToolIncludeFilter
         {
             get { return (IncludeFilter as IncludeFilterPatternLayout).IncludeFilter; }
             set

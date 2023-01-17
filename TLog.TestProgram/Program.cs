@@ -12,7 +12,7 @@ namespace TLog
         static void Main(string[] args)
         {
             TLogger.DefaultPatternLayout = "%includefilter %level %date [%C:%M] %message%newline";
-            TLogger.DebugViewIncludeFilter = "TLog";
+            TLogger.DebugToolIncludeFilter = "TLog";
             TLogger.Configure(Level.Warn);
 
             TLogger.Trace("TRACE");
