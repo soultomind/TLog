@@ -28,11 +28,11 @@ _______________________
   ```
 _______________________
 #### IncludeFilterPatternLayout
-- 로그 출력시 DebugView Filter/Include 항목에서 사용될 수 있는 필터 이름을 제공합니다.   
-  해당 값을 설정함으로써 DebugView 에 많은 로그 출력이 발생할때 해당 항목값을 설정해서 특정 애플리케이션에대한 로그만 추출하여 볼 수 있습니다.
-  + 패턴레이아웃은 "<strong>includefilter</strong>" 문자열이며 DebugViewIncludeFilter 속성을 통하여 값을 설정 할 수 있습니다.
+- 로그 출력시 디버그툴(DebugView, ..) Filter/Include 항목에서 사용될 수 있는 필터 이름을 제공합니다.   
+  해당 값을 설정함으로써 디버그툴 에 많은 로그 출력이 발생할때 해당 항목값을 설정해서 특정 애플리케이션에대한 로그만 추출하여 볼 수 있습니다.
+  + 패턴레이아웃은 "<strong>includefilter</strong>" 문자열이며 DebugToolIncludeFilter 속성을 통하여 값을 설정 할 수 있습니다.
   ```
-  TLogger.DebugViewIncludeFilter = "TLog";
+  TLogger.DebugToolIncludeFilter = "TLog";
   ```
 _______________________
 #### LevelPatternLayout
@@ -75,7 +75,7 @@ namespace TLog
         static void Main(string[] args)
         {
             TLogger.DefaultPatternLayout = "%includefilter %level %date [%C:%M] %message%newline";
-            TLogger.DebugViewIncludeFilter = "TLog";
+            TLogger.DebugToolIncludeFilter = "TLog";
             TLogger.Configure(Level.Warn);
 
             TLogger.Trace("TRACE");
